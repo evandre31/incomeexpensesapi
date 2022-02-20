@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
+
+from authentication.renderers import UserRenderer
 from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer #, SetNewPasswordSerializer, ResetPasswordEmailRequestSerializer, , , LogoutSerializer
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,7 +13,6 @@ import jwt
 from django.conf import settings
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-# from .renderers import UserRenderer
 # from django.contrib.auth.tokens import PasswordResetTokenGenerator
 # from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
 # from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -30,7 +31,7 @@ from .utils import Util
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
-#     renderer_classes = (UserRenderer,)
+    renderer_classes = (UserRenderer,)
     def post(self, request):
         user = request.data
         serializer = self.serializer_class(data=user)
