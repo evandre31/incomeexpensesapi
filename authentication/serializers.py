@@ -1,8 +1,7 @@
 from ast import Try
 from rest_framework import serializers
-
 from authentication.utils import Util
-from .models import User
+from .models import User, UserProfile
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
@@ -17,14 +16,11 @@ from django.contrib.sites.shortcuts import get_current_site
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=68, min_length=6, write_only=True)
-
 #     default_error_messages = {
 #         'username': 'The username should only contain alphanumeric characters'}
-
     class Meta:
         model = User
-        fields = ['email','username', 'password', 'is_verified'] # add more fields here  
-
+        fields = ['email','username', 'password'] # add more fields here  
     def validate(self, attrs):
         email = attrs.get('email', '')
         username = attrs.get('username', '')
@@ -140,3 +136,10 @@ class LogoutSerializer(serializers.Serializer):
             RefreshToken(self.token).blacklist()
         except TokenError:
             self.fail('bad_token')
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    user=serializers.StringRelatedField(read_only=True)
+    class Meta:
+        model=UserProfile
+        fields='__all__'

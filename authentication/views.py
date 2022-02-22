@@ -1,11 +1,10 @@
 from django.shortcuts import render
 from rest_framework import generics, status, views, permissions
-
 from authentication.renderers import UserRenderer
-from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer, ResetPasswordEmailRequestSerializer , SetNewPasswordSerializer , LogoutSerializer
+from .serializers import RegisterSerializer, EmailVerificationSerializer, LoginSerializer, ResetPasswordEmailRequestSerializer , SetNewPasswordSerializer , LogoutSerializer, UserProfileSerializer
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User
+from .models import User, UserProfile
 from .utils import Util
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
@@ -19,6 +18,8 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from .utils import Util
+from .permissions import IsOwnerProfileOrReadOnly
+from rest_framework.generics import (ListCreateAPIView,RetrieveUpdateDestroyAPIView,)
 # from django.shortcuts import redirect
 # from django.http import HttpResponsePermanentRedirect
 # import os
@@ -145,3 +146,17 @@ class LogoutAPIView(generics.GenericAPIView):
         serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class UserProfileListCreateView(ListCreateAPIView):
+    queryset=UserProfile.objects.all()
+    serializer_class=UserProfileSerializer
+    permission_classes=[permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        user=self.request.user
+        serializer.save(user=user)
+
+
+class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
+    queryset=UserProfile.objects.all()
+    serializer_class=UserProfileSerializer
+    permission_classes=[IsOwnerProfileOrReadOnly,permissions.IsAuthenticated]

@@ -1,5 +1,15 @@
 from django.urls import path
-from .views import RegisterView  ,VerifyEmail, LoginAPIView,PasswordTokenCheckAPI, RequestPasswordResetEmail,SetNewPasswordAPIView , LogoutAPIView 
+from .views import (
+    RegisterView  ,
+    VerifyEmail, 
+    LoginAPIView,
+    PasswordTokenCheckAPI, 
+    RequestPasswordResetEmail,
+    SetNewPasswordAPIView , 
+    LogoutAPIView , 
+    UserProfileListCreateView, 
+    UserProfileDetailView
+)
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
@@ -13,5 +23,10 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('request-reset-email/', RequestPasswordResetEmail.as_view(),name="request-reset-email"),
     path('password-reset/<uidb64>/<token>/',PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
-    path('password-reset-complete', SetNewPasswordAPIView.as_view(),name='password-reset-complete')
+    path('password-reset-complete', SetNewPasswordAPIView.as_view(),name='password-reset-complete'),
+    #accounts.profile
+    #gets all user profiles and create a new profile
+    path("all-profiles", UserProfileListCreateView.as_view(),name="all-profiles"),
+    # retrieves profile details of the currently logged in user
+    path("profile/<int:pk>", UserProfileDetailView.as_view(),name="profile"),
 ]
