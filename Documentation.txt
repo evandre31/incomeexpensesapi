@@ -8,3 +8,6 @@ python -m venv venv :  pour creer venv dans le dossier mere
  python manage.py startapp accounts
 
  pip install python_decouple   : for .env   : https://pypi.org/project/python-decouple/ :  https://www.youtube.com/watch?v=myqfTX9ZbTs
+
+ pip freeze > requirements.txt
+ pip install -r requirements.txt
